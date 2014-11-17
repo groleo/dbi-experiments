@@ -1,0 +1,12 @@
+ifneq ("$D","")
+GDB:=gdb --args
+endif
+
+export LD_LIBRARY_PATH:=/usr/local/lib:/usr/lib
+export DYNINSTAPI_RT_LIB:=/usr/local/lib/libdyninstAPI_RT.so
+CHROME?=/home/adrian/workspace/chromium/chrome/src/out/Debug/chrome
+CHROME_ARGS:=--no-sandbox --proxy-server="http=proxy.ir.intel.com:911" http://webglsamples.org/aquarium/aquarium.html
+DYNAMORIO_E:=/home/adrian/workspace/dbi/dynamorio-read-only/exports
+PIN_ROOT:=/home/adrian/workspace/dbi/pin-2.14-67254-gcc.4.4.7-linux
+
+# vim:ft=make
