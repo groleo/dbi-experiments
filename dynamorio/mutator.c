@@ -40,9 +40,8 @@
 #include <string.h>
 
 #include "dr_api.h"
-#include <drmgr.h>
+#include "drmgr.h"
 #include "drsyms.h"
-
 #include "drwrap.h"
 
 #ifdef WINDOWS
@@ -51,11 +50,9 @@
 # define IF_WINDOWS_ELSE(x,y) y
 #endif
 
-//static void event_exit(void);
+static void event_exit(void);
 static void wrap_pre(void *wrapcxt, OUT void **user_data);
 static void wrap_post(void *wrapcxt, void *user_data);
-
-static void *max_lock; /* to synch writes to max_malloc */
 
 static
 void so_load_event(void *drcontext, const module_data_t *mod, bool loaded)
@@ -67,10 +64,6 @@ void so_load_event(void *drcontext, const module_data_t *mod, bool loaded)
         if (ok)
             dr_fprintf(STDERR, "<wrapped gpu::gles2::GLES2Implementation::Viewport @"PFX"\n", towrap);
         else {
-            /* We expect this w/ forwarded exports (e.g., on win7 both
-             * kernel32!HeapAlloc and kernelbase!HeapAlloc forward to
-             * the same routine in ntdll.dll)
-             */
             dr_fprintf(STDERR, "<FAILED to wrap gpu::gles2::GLES2Implementation::Viewport @"PFX": already wrapped?\n", towrap);
         }
     } else {
@@ -109,34 +102,11 @@ fork_init_event(void *drcontext){
     dr_fprintf(STDERR,"fork\n");
 }
 
-DR_EXPORT void
-dr_init(client_id_t id)
-{
-    dr_set_client_name("DynamoRIO Sample Client 'wrap'", "http://dynamorio.org/issues");
-    /* make it easy to tell, by looking at log file, which client executed */
-    dr_log(NULL, LOG_ALL, 1, "Client 'wrap' initializing\n");
-    /* also give notification to STDERR */
-    if (dr_is_notify_on()) {
-# ifdef WINDOWS
-        /* ask for best-effort printing to cmd window.  must be called in dr_init(). */
-        dr_enable_console_printing();
-# endif
-        dr_fprintf(STDERR, "Client wrap is running\n");
-    }
-    drwrap_init();
-    //dr_register_exit_event(event_exit);
-    //dr_register_module_load_event(module_load_event);
-    drmgr_register_module_load_event(module_load_event);
-    //max_lock = dr_mutex_create();
-}
-#if 0
 static void
 event_exit(void)
 {
-    dr_mutex_destroy(max_lock);
     drwrap_exit();
 }
-#endif
 
 static void
 wrap_pre(void *wrapcxt, OUT void **user_data)
@@ -150,3 +120,20 @@ wrap_post(void *wrapcxt, void *user_data)
 {
 }
 
+////////////////////////////////////////////////////////////////////////////////
+DR_EXPORT void
+dr_init(client_id_t id)
+{
+    dr_set_client_name("DynamoRIO Sample Client 'wrap'", "http://dynamorio.org/issues");
+    /* make it easy to tell, by looking at log file, which client executed */
+    dr_log(NULL, LOG_ALL, 1, "Client 'wrap' initializing\n");
+    /* also give notification to STDERR */
+    if (dr_is_notify_on()) {
+        dr_fprintf(STDERR, "Client wrap is running\n");
+    }
+    drwrap_init();
+    drwrap_set_global_flags(DRWRAP_NO_FRILLS | DRWRAP_FAST_CLEANCALLS);
+    dr_register_exit_event(event_exit);
+    dr_set_process_exit_behavior(DR_EXIT_SKIP_THREAD_EXIT | DR_EXIT_MULTI_THREAD);
+    drmgr_register_module_load_event(module_load_event);
+}

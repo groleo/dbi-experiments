@@ -2,11 +2,23 @@ ifneq ("$D","")
 GDB:=gdb --args
 endif
 
-export LD_LIBRARY_PATH:=/usr/local/lib:/usr/lib
+ifneq ("$V","")
+export DYNINST_DEBUG_STARTUP=1
+export DYNINST_DEBUG_PARSING=1
+endif
+
+
+export LD_LIBRARY_PATH:=/usr/local/lib:/usr/lib:/home/adrian/workspace/github/groleo/dbi-experiments/dyninst
 export DYNINSTAPI_RT_LIB:=/usr/local/lib/libdyninstAPI_RT.so
 CHROME?=/home/adrian/workspace/chromium/chrome/src/out/Debug/chrome
 CHROME_ARGS:=--no-sandbox --proxy-server="http=proxy.ir.intel.com:911" http://webglsamples.org/aquarium/aquarium.html
-DYNAMORIO_E:=/home/adrian/workspace/dbi/dynamorio-read-only/exports
+
+# DynamoRIO
+DYNAMORIO_E:=/home/adrian/workspace/dbi/dynamorio/exports
+DRRUN:=$(DYNAMORIO_E)/bin64/drrun
+DRRUN_FLAGS:=-mode probe -debug -64 -root $(DYNAMORIO_E) -v -hot_patching -loglevel 4
+
+# Pin config
 PIN_ROOT:=/home/adrian/workspace/dbi/pin-2.14-67254-gcc.4.4.7-linux
 
 # vim:ft=make

@@ -85,7 +85,8 @@ VOID ImageLoad(IMG img, VOID *v)
     // Look for Sleep only in kernel32.dll
     if (MatchedImageName(IMG_Name(img), "chrome"))
     {
-        sleepRtn = RTN_FindByName(img, "_ZN3gpu5gles219GLES2Implementation8ViewportEv");
+        cerr << "chrome" <<endl;
+        sleepRtn = RTN_FindByName(img, "_ZN3gpu5gles219GLES2Implementation8ViewportEiiii");
     }
 
     if (RTN_Valid(sleepRtn))
