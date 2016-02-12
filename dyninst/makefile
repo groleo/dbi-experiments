@@ -4,7 +4,7 @@ all: test
 
 test: mutator
 	-$(GDB) ./mutator -- \
-	$(CHROME) $(CHROME_ARGS)
+	$(APP) $(APP_ARGS)
 
 mutator: mutator.cpp libhooks.so
 	g++ -g $< -o $@ -ldyninstAPI -lgomp -std=c++11

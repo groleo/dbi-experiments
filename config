@@ -10,8 +10,9 @@ endif
 
 export LD_LIBRARY_PATH:=/usr/local/lib:/usr/lib:/home/adrian/workspace/github/groleo/dbi-experiments/dyninst
 export DYNINSTAPI_RT_LIB:=/usr/local/lib/libdyninstAPI_RT.so
-CHROME?=/home/adrian/workspace/chromium/chrome/src/out/Debug/chrome
-CHROME_ARGS:=--no-sandbox --proxy-server="http=proxy.ir.intel.com:911" http://webglsamples.org/aquarium/aquarium.html
+
+APP?=/home/adrian/workspace/chromium/chrome/src/out/Debug/chrome
+APP_ARGS?=--no-sandbox --proxy-server="http=proxy.ir.intel.com:911" http://webglsamples.org/aquarium/aquarium.html
 
 # DynamoRIO
 DYNAMORIO_E:=/home/adrian/workspace/dbi/dynamorio/exports

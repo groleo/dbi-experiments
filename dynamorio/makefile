@@ -8,7 +8,7 @@ all: test
 
 test: libmutator.so
 	$(DRRUN) $(DRRUN_FLAGS) -c ./libmutator.so -- \
-	$(CHROME) $(CHROME_ARGS)
+	$(APP) $(APP_ARGS)
 
 libmutator.so: mutator.c
 	gcc -g $< -o $@ $(CFLAGS) $(LDFLAGS)

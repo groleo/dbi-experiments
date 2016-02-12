@@ -10,7 +10,7 @@ gdb:
 
 test: libmutator.so
 	$(GDB) $(DRRUN) $(DRRUN_FLAGS) -diagnostics -c ./libmutator.so -- \
-	$(CHROME) $(CHROME_ARGS)
+	$(APP) $(APP_ARGS)
 
 libmutator.so: insert_liboffs.client.c
 	gcc -g $< -o $@ $(CFLAGS) $(LDFLAGS)
